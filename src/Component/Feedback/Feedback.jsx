@@ -1,66 +1,82 @@
-import React, { Component } from "react";
+// import React, { Component } from "react";
 import Statistics from "../Statistics/Statistics";
 import FeedbackOptions from "../Btns/FeedbackOptions";
 import Notification from "../Notification/Notification";
+import { useState, useEffect } from "react";
 
+export default function Feedback() {
+    // static defaultValues = {
+    //     goodStart: 0,
+    //     neutralStart: 0,
+    //     badStart: 0,
+    // };
 
-export default class Feedback extends Component {
+    const [valueGood, setgoodValue] = useState(0);
+    const [valueBad, setbadValue] = useState(0);
+    const [valueNeutral, setneutralValue] = useState(0);
+    let total = valueGood + valueNeutral + valueBad;
 
-    static defaultValues = {
-        goodStart: 0,
-        neutralStart: 0,
-        badStart: 0,
+    // state = {
+    //     good: 0,
+    //     neutral: 0,
+    //     bad: 0
+    // }
+
+    const addPoinsGood = () => {
+
+        setgoodValue(valueGood + 1);
+        // this.setState(
+        //     (prevCount) => {
+        //         return {
+        //             good: prevCount.good + 1,
+        //         };
+        //     }, () => {
+        //         console.log("Це позитивні відгуки");
+        //     });
+    };
+
+    const addPoinsNeutral = () => {
+        setneutralValue(valueNeutral + 1);
+        // this.setState(
+        //     (prevCount) => {
+        //         return {
+        //             neutral: prevCount.neutral + 1,
+        //         };
+        //     }, () => {
+        //         console.log("Це нейтральні відгуки");
+        //     });
+    };
+
+    const addPoinsBad = () => {
+        setbadValue(valueBad + 1);
+        // this.setState(
+        //     (prevCount) => {
+        //         return {
+        //             bad: prevCount.bad + 1,
+        //         };
+        //     }, () => {
+        //         console.log("Це негативні відгуки");
+        //     });
     };
 
 
-    state = {
-        good: 0,
-        neutral: 0,
-        bad: 0
-    }
+    
 
-    addPoinsGood = () => {
-        this.setState(
-            (prevCount) => {
-                return {
-                    good: prevCount.good + 1,
-                };
-            }, () => {
-                console.log("Це позитивні відгуки");
-            });
-    };
+    // const countTotalFeedback = (valueGood, valueNeutral, valueBad) => {
 
-    addPoinsNeutral = () => {
-        this.setState(
-            (prevCount) => {
-                return {
-                    neutral: prevCount.neutral + 1,
-                };
-            }, () => {
-                console.log("Це нейтральні відгуки");
-            });
-    };
+        
 
-    addPoinsBad = () => {
-        this.setState(
-            (prevCount) => {
-                return {
-                    bad: prevCount.bad + 1,
-                };
-            }, () => {
-                console.log("Це негативні відгуки");
-            });
-    };
+    // };
 
 
-    countTotalFeedback = (good, neutral, bad) => {
-        let total = good + neutral + bad;
-        return total;
-    };
+    useEffect(() => {
+      console.log("good value");
+    }, []);
 
-    countPositiveFeedbackPercentage = (good, neutral, bad) => {
-        let total = good + neutral + bad;
-        let positiveFeedback = Math.round(good / total * 100);
+
+    const countPositiveFeedbackPercentage = (total) => {
+       
+        let positiveFeedback = Math.round(valueGood / total * 100);
 
         if (total > 0) {
             return positiveFeedback;
@@ -70,25 +86,25 @@ export default class Feedback extends Component {
 
     };
 
-    render() {
+    // render() {
 
-        const { good, neutral, bad } = this.state;
+    // const { good, neutral, bad } = this.state;
 
 
-        return (
+    return (
 
-            <>
+        <>
 
-                <FeedbackOptions addPoinsGood={this.addPoinsGood} addPoinsNeutral={this.addPoinsNeutral}
-                    addPoinsBad={this.addPoinsBad} onLeaveFeedback={1}></FeedbackOptions>
-                {good + neutral + bad > 0
-                    ? <Statistics good={good} neutral={neutral} bad={bad} total={this.countTotalFeedback(good, neutral, bad)} positivePercentage={this.countPositiveFeedbackPercentage(good, neutral, bad)} />
-                    : <Notification message="There is no feedback"></Notification>
-                }
+            <FeedbackOptions addPoinsGood={addPoinsGood} addPoinsNeutral={addPoinsNeutral}
+                addPoinsBad={addPoinsBad} onLeaveFeedback={1}></FeedbackOptions>
+            {valueGood + valueNeutral + valueBad > 0
+                ? <Statistics good={valueGood} neutral={valueNeutral} bad={valueBad} total={total} positivePercentage={countPositiveFeedbackPercentage(total)} />
+                : <Notification message="There is no feedback"></Notification>
+            }
 
-            </>
-        );
+        </>
+    );
 
-    }
+    // }
 
-}
+};
