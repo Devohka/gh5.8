@@ -2,9 +2,35 @@
 import Statistics from "../Statistics/Statistics";
 import FeedbackOptions from "../Btns/FeedbackOptions";
 import Notification from "../Notification/Notification";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
+import { createContext } from 'react';
 
-export default function Feedback() {
+
+
+const countPositiveFeedbackPercentage = (total, valueGood) => {
+
+    let positiveFeedback = Math.round(valueGood / total * 100);
+
+    if (total > 0) {
+        return positiveFeedback;
+    } else {
+        return positiveFeedback = 0;
+    };
+
+};
+
+const ThemeContext = createContext(null);
+
+
+export default function MyFeedback() {
+    return (
+        <ThemeContext.Provider value={countPositiveFeedbackPercentage}>
+            <Feedback ></Feedback>
+        </ThemeContext.Provider>
+    );
+};
+
+function Feedback() {
     // static defaultValues = {
     //     goodStart: 0,
     //     neutralStart: 0,
@@ -14,17 +40,23 @@ export default function Feedback() {
     const [valueGood, setgoodValue] = useState(0);
     const [valueBad, setbadValue] = useState(0);
     const [valueNeutral, setneutralValue] = useState(0);
-    let total = valueGood + valueNeutral + valueBad;
 
-    // state = {
-    //     good: 0,
-    //     neutral: 0,
+    let total = valueGood + valueNeutral + valueBad;
+    const theme = useContext(ThemeContext);
+    console.log(theme);
+
+    const inputRef = useRef(null);
+
+    function handleClick() {
+        inputRef.current.focus();
+    };
     //     bad: 0
     // }
 
     const addPoinsGood = () => {
 
         setgoodValue(valueGood + 1);
+        handleClick();
         // this.setState(
         //     (prevCount) => {
         //         return {
@@ -37,6 +69,7 @@ export default function Feedback() {
 
     const addPoinsNeutral = () => {
         setneutralValue(valueNeutral + 1);
+        handleClick();
         // this.setState(
         //     (prevCount) => {
         //         return {
@@ -49,6 +82,7 @@ export default function Feedback() {
 
     const addPoinsBad = () => {
         setbadValue(valueBad + 1);
+        handleClick();
         // this.setState(
         //     (prevCount) => {
         //         return {
@@ -60,45 +94,32 @@ export default function Feedback() {
     };
 
 
-    
+
 
     // const countTotalFeedback = (valueGood, valueNeutral, valueBad) => {
 
-        
+
 
     // };
 
 
     useEffect(() => {
-      console.log("good value");
+        console.log("good value");
     }, []);
 
 
-    const countPositiveFeedbackPercentage = (total) => {
-       
-        let positiveFeedback = Math.round(valueGood / total * 100);
-
-        if (total > 0) {
-            return positiveFeedback;
-        } else {
-            return positiveFeedback = 0;
-        };
-
-    };
 
     // render() {
-
     // const { good, neutral, bad } = this.state;
-
 
     return (
 
         <>
 
-            <FeedbackOptions addPoinsGood={addPoinsGood} addPoinsNeutral={addPoinsNeutral}
+            <FeedbackOptions addPoinsGood={addPoinsGood}  addPoinsNeutral={addPoinsNeutral}
                 addPoinsBad={addPoinsBad} onLeaveFeedback={1}></FeedbackOptions>
             {valueGood + valueNeutral + valueBad > 0
-                ? <Statistics good={valueGood} neutral={valueNeutral} bad={valueBad} total={total} positivePercentage={countPositiveFeedbackPercentage(total)} />
+                ? <Statistics  good={valueGood} neutral={valueNeutral} bad={valueBad} total={total} positivePercentage={theme(total, valueGood)} />
                 : <Notification message="There is no feedback"></Notification>
             }
 
